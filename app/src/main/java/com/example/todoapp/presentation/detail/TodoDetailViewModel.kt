@@ -1,5 +1,9 @@
+package com.example.todoapp.presentation.detail
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.todoapp.domain.model.Todo
+import com.example.todoapp.domain.repository.TodoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -16,7 +20,11 @@ class TodoDetailViewModel(
             _uiState.value = TodoDetailUIState.Loading
             try {
                 val todo = repository.getTodoById(todoId)
-                _uiState.value = TodoDetailUIState.Success(todo)
+                if (todo != null) {
+                    _uiState.value = TodoDetailUIState.Success(todo)
+                } else {
+                    _uiState.value = TodoDetailUIState.Error("Todo not found")
+                }
             } catch (e: Exception) {
                 _uiState.value = TodoDetailUIState.Error("Failed to load todo: ${e.localizedMessage}")
             }

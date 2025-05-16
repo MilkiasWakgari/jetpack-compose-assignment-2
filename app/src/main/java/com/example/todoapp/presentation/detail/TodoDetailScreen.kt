@@ -1,3 +1,5 @@
+package com.example.todoapp.presentation.detail
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
@@ -8,17 +10,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.todoapp.domain.model.Todo
+import com.example.todoapp.domain.repository.TodoRepository
 
 @Composable
 fun TodoDetailScreen(
     todoId: Int,
-    repository: TodoRepository
+    viewModel: TodoDetailViewModel
 ) {
-    val viewModel: TodoDetailViewModel = viewModel(
-        factory = TodoDetailViewModelFactory(repository)
-    )
-
     val state by viewModel.uiState.collectAsState()
 
     LaunchedEffect(todoId) {
@@ -31,8 +30,8 @@ fun TodoDetailScreen(
             val todo = uiState.todo
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("Title: ${todo.title}")
-                Text("Completed: ${todo.completed}")
-                Text("User ID: ${todo.userId}")
+                Text("Description: ${todo.description}")
+                Text("Status: ${if (todo.isCompleted) "Completed" else "Pending"}")
             }
         }
         is TodoDetailUIState.Error -> Text("Error: ${uiState.message}")

@@ -1,20 +1,50 @@
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.Text
+package com.example.todoapp.presentation.components
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.todoapp.domain.model.Todo
 
 @Composable
-fun TodoItemCard(todo: Todo, onClick: () -> Unit) {
-    Card(modifier = Modifier
-        .padding(8.dp)
-        .clickable { onClick() }) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = todo.title)
-            Text(text = if (todo.completed) "Done" else "Pending")
+fun TodoItemCard(
+    todo: Todo,
+    onItemClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        onClick = { onItemClick(todo.id) }
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = todo.title,
+                style = MaterialTheme.typography.titleMedium
+            )
+            if (todo.description.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = todo.description,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = if (todo.isCompleted) "Completed" else "Pending",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }

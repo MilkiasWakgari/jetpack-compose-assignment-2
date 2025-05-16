@@ -1,44 +1,44 @@
+package com.example.todoapp.presentation.list
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.todoapp.domain.model.Todo
+import com.example.todoapp.presentation.components.TodoItemCard
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListScreen(
     navController: NavController,
-    repository: TodoRepository
+    viewModel: TodoListViewModel
 ) {
-    val viewModel: TodoListViewModel = viewModel(
-        factory = TodoListViewModelFactory(repository)
-    )
+    val state by viewModel.state.collectAsState()
 
-    val state by viewModel.uiState.collectAsState()
-
-    Scaffold(topBar = { TopAppBar(title = { Text("Todo List") }) }) { padding ->
-        Box(modifier = Modifier
-            .padding(padding)
-            .fillMaxSize()) {
-            when (val uiState = state) {
-                is TodoListUIState.Loading -> CircularProgressIndicator()
-                is TodoListUIState.Success -> LazyColumn {
-                    items(uiState.todos) { todo ->
-                        TodoItemCard(todo = todo) {
-                            navController.navigate("detail/${todo.id}")
-                        }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Todo List") }
+            )
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            items(state.todos) { todo ->
+                TodoItemCard(
+                    todo = todo,
+                    onItemClick = { todoId ->
+                        navController.navigate("detail/$todoId")
                     }
-                }
-                is TodoListUIState.Error -> Column(modifier = Modifier.padding(16.dp)) {
-                    Text(uiState.message, color = MaterialTheme.colorScheme.error)
-                    Button(onClick = { viewModel.fetchTodos() }) {
-                        Text("Retry")
-                    }
-                }
+                )
             }
         }
     }
