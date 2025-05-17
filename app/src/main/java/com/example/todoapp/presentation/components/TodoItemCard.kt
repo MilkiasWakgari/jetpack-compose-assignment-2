@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.todoapp.domain.model.Todo
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoItemCard(
     todo: Todo,

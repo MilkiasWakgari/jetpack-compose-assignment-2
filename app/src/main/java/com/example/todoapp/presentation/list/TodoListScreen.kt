@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import com.example.todoapp.domain.model.Todo
 import com.example.todoapp.presentation.components.TodoItemCard
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListScreen(
     navController: NavController,
