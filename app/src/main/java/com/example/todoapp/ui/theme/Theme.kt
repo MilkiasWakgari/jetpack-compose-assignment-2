@@ -27,7 +27,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun MyAppTheme(
+fun TodoAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {

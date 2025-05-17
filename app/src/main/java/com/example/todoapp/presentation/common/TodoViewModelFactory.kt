@@ -1,16 +1,17 @@
-package com.example.todoapp.presentation.list
+package com.example.todoapp.presentation.common
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.todoapp.domain.repository.TodoRepository
+import com.example.todoapp.domain.use_case.GetTodosUseCase
+import com.example.todoapp.presentation.list.TodoListViewModel
 
 class TodoListViewModelFactory(
-    private val repository: TodoRepository
+    private val getTodosUseCase: GetTodosUseCase
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TodoListViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return TodoListViewModel(repository) as T
+            return TodoListViewModel(getTodosUseCase) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

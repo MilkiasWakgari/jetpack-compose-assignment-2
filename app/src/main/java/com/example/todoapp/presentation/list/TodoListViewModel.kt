@@ -2,46 +2,29 @@ package com.example.todoapp.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todoapp.domain.model.Todo
-import com.example.todoapp.domain.repository.TodoRepository
+import com.example.todoapp.domain.use_case.GetTodosUseCase
+import com.example.todoapp.presentation.common.TodoListUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-data class TodoListState(
-    val todos: List<Todo> = emptyList(),
-    val isLoading: Boolean = false,
-    val error: String? = null
-)
-
 class TodoListViewModel(
-    private val repository: TodoRepository
+    private val getTodosUseCase: GetTodosUseCase
 ) : ViewModel() {
-    private val _state = MutableStateFlow(TodoListState())
-    val state: StateFlow<TodoListState> = _state.asStateFlow()
+
+    private val _uiState = MutableStateFlow<TodoListUIState>(TodoListUIState.Loading)
+    val uiState: StateFlow<TodoListUIState> = _uiState
 
     init {
-        fetchTodos()
+        getTodoList()
     }
 
-    fun fetchTodos() {
+    private fun getTodoList() {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
-            try {
-                repository.getTodos().collect { todos ->
-                    _state.value = _state.value.copy(
-                        todos = todos,
-                        isLoading = false,
-                        error = null
-                    )
-                }
-            } catch (e: Exception) {
-                _state.value = _state.value.copy(
-                    isLoading = false,
-                    error = e.message ?: "An error occurred"
-                )
+            getTodosUseCase().collect { todos ->
+                _uiState.value = TodoListUIState.Success(todos)
             }
         }
     }
 }
+

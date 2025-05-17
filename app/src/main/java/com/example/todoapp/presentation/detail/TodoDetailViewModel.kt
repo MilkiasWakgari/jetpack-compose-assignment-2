@@ -3,34 +3,22 @@ package com.example.todoapp.presentation.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.domain.model.Todo
-import com.example.todoapp.domain.repository.TodoRepository
+import com.example.todoapp.domain.use_case.GetTodoByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class TodoDetailViewModel(
-    private val repository: TodoRepository
+    private val getTodoByIdUseCase: GetTodoByIdUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<TodoDetailUIState>(TodoDetailUIState.Loading)
-    val uiState: StateFlow<TodoDetailUIState> = _uiState
+    private val _todoState = MutableStateFlow<Todo?>(null)
+    val todoState: StateFlow<Todo?> = _todoState
 
-    fun loadTodo(todoId: Int) {
+    fun loadTodoById(id: Int) {
         viewModelScope.launch {
-            _uiState.value = TodoDetailUIState.Loading
-            try {
-                val todo = repository.getTodoById(todoId)
-                if (todo != null) {
-                    _uiState.value = TodoDetailUIState.Success(todo)
-                } else {
-                    _uiState.value = TodoDetailUIState.Error("Todo not found")
-                }
-            } catch (e: Exception) {
-                _uiState.value = TodoDetailUIState.Error("Failed to load todo: ${e.localizedMessage}")
-            }
+            val todo = getTodoByIdUseCase(id)
+            _todoState.value = todo
         }
     }
 }
-
-
-

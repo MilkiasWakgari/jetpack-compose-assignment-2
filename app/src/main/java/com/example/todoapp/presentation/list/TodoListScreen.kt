@@ -1,45 +1,54 @@
 package com.example.todoapp.presentation.list
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.navigation.NavController
-import com.example.todoapp.domain.model.Todo
+import com.example.todoapp.presentation.common.TodoListUIState
 import com.example.todoapp.presentation.components.TodoItemCard
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListScreen(
     navController: NavController,
     viewModel: TodoListViewModel
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.uiState.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Todo List") }
-            )
+    when (state) {
+        is TodoListUIState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
         }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            items(state.todos) { todo ->
-                TodoItemCard(
-                    todo = todo,
-                    onItemClick = { todoId ->
-                        navController.navigate("detail/$todoId")
+        is TodoListUIState.Success -> {
+            val todos = (state as TodoListUIState.Success).todos
+            if (todos.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "No to-dos found.")
+                }
+            } else {
+                LazyColumn {
+                    items(todos) { todo ->
+                        TodoItemCard(
+                            todo = todo,
+                            onItemClick = { navController.navigate("detail/${todo.id}") },
+                            modifier = Modifier
+                        )
                     }
-                )
+                }
+            }
+        }
+        is TodoListUIState.Error -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = (state as TodoListUIState.Error).message)
             }
         }
     }
