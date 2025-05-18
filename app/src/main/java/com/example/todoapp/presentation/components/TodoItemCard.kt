@@ -17,13 +17,12 @@ fun TodoItemCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(horizontal = 8.dp),
         onClick = { onItemClick(todo.id) }
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
         ) {
             Text(
                 text = todo.title,
@@ -31,15 +30,12 @@ fun TodoItemCard(
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = if (todo.isCompleted) "Completed" else "Pending",
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+
+            Text(
+                text = if (todo.isCompleted) "✅ Completed" else "⌛ Pending",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (todo.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+            )
         }
     }
 }

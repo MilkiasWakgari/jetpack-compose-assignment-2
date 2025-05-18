@@ -37,18 +37,18 @@ class MainActivity : ComponentActivity() {
         val repository = TodoRepositoryImpl(dao, api)
 
         // 4. Insert a default todo if empty
-        CoroutineScope(Dispatchers.IO).launch {
-            val existing = dao.getTodos().firstOrNull()
-            if (existing.isNullOrEmpty()) {
-                dao.insertTodo(
-                    TodoEntity(
-                        id = 0,
-                        title = "Welcome Task",
-                        isCompleted = false
-                    )
-                )
-            }
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val existing = dao.getTodos().firstOrNull()
+//            if (existing.isNullOrEmpty()) {
+//                dao.insertTodo(
+//                    TodoEntity(
+//                        id = 0,
+//                        title = "Welcome Task",
+//                        isCompleted = false
+//                    )
+//                )
+//            }
+//        }
 
         // 5. Use Cases
         val getTodosUseCase = GetTodosUseCase(repository)
@@ -56,10 +56,8 @@ class MainActivity : ComponentActivity() {
         val getTodoByIdUseCase = GetTodoByIdUseCase(repository)
 
         // 6. ViewModel Factories
-        val todoListViewModelFactory = TodoListViewModelFactory(
-            getTodosUseCase,
-            refreshTodosUseCase
-        )
+        val todoListViewModelFactory = TodoListViewModelFactory(repository, getTodosUseCase)
+
         val todoDetailViewModelFactory = TodoDetailViewModelFactory(getTodoByIdUseCase)
 
         // 7. ViewModels
