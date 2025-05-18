@@ -29,13 +29,7 @@ fun TodoItemCard(
                 text = todo.title,
                 style = MaterialTheme.typography.titleMedium
             )
-            if (todo.description.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = todo.description,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),

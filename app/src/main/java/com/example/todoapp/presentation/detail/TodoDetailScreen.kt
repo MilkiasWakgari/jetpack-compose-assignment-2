@@ -29,7 +29,6 @@ fun TodoDetailScreen(
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Title: ${it.title}", style = MaterialTheme.typography.titleLarge)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Description: ${it.description}")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = if (it.isCompleted) "Completed" else "Pending")
         }
